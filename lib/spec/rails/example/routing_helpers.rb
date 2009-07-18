@@ -28,11 +28,11 @@ module Spec
             else
               path, querystring = expected.split('?')
               path_string = path
+              path = { :path => path, :method => :get }
             end
             params = querystring.blank? ? {} : @example.params_from_querystring(querystring)
             begin
-              @example.assert_recognizes(@options, path, params)
-              @example.assert_generates(path_string, @options, {}, params)
+              @example.assert_routing(path, @options, {}, params)
               true
             rescue ActionController::RoutingError, ::Test::Unit::AssertionFailedError => e
               raise e.class, "#{e}\nIf you're expecting this failure, we suggest {:#{path[:method]}=>\"#{path[:path]}\"}.should_not be_routable"
