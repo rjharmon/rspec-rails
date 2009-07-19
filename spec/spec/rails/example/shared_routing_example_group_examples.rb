@@ -131,8 +131,7 @@ share_as :RouteToExampleGroupSpec do
     @route = { :controller => "controller_spec", :action => "some_action" }
     should_receive(:assert_routing).with(anything, @route, {}, anything)
     "/controller_spec/some_action".
-      should route_to(@route).
-
+      should route_to(@route)
   end
   it "sends extra args through" do
     @route = { :controller => "controller_spec", :action => "some_action" }
