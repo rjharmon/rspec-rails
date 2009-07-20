@@ -11,10 +11,10 @@ module Spec
             end
             method = path.keys.first
             path = path[method]
-            path, querystring = path.split('?')
           else
-            raise USAGE
+            method = :get
           end
+          path, querystring = path.split('?')
           return method, path, querystring
         end
       end

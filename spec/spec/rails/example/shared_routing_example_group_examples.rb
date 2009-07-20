@@ -17,7 +17,7 @@ share_as :RoutingExampleGroupSpec do
     end
     it "sends extra args through" do
       @route = { :controller => "controller_spec", :action => "some_action" }
-      should_receive(:assert_routing).with(anything, anything, {}, { "a" => 1, "b" => 2 } )
+      should_receive(:assert_routing).with(anything, anything, {}, { :a => "1", :b => "2" } )
       route_for(@route).
         should == "/controller_spec/some_action?a=1&b=2"
     end
@@ -33,7 +33,7 @@ share_as :RoutingExampleGroupSpec do
     end
   
     it "recognize routes with methods besides :get" do
-      should_receive(:assert_routing).with(hash_including(:method => :put), anything, anything, anything)
+      should_receive(:assert_routing).with(hash_including(:method => :put), anything, {},  anything)
     
       route_for(:controller => "rspec_on_rails_specs", :action => "update", :id => "37").
         should == {:path => "/rspec_on_rails_specs/37", :method => :put}
@@ -120,11 +120,11 @@ share_as :RouteToExampleGroupSpec do
     { :get => "/controller_spec/some_action" }.
       should route_to( :controller => "controller_spec", :action => "some_action" )
   end
-
-  it "translates GET-only paths to be explicit" do
+     
+  it "translates GET-only paths to be explicit, when matching against a string (for parity with route_for().should == '/path')" do
     should_receive(:assert_routing).with(hash_including(:method => :get), anything, {}, anything)
     "/controller_spec/some_action".
-      should route_to(:controller => "controller_spec", :action => "some_action")
+      should route_to({})
   end
 
   it "asserts, using assert_routing, that the :controller and :action are involved" do
@@ -135,7 +135,7 @@ share_as :RouteToExampleGroupSpec do
   end
   it "sends extra args through" do
     @route = { :controller => "controller_spec", :action => "some_action" }
-    should_receive(:assert_routing).with(anything, anything, {}, { "a" => 1, "b" => 2 } )
+    should_receive(:assert_routing).with(anything, anything, {}, { :a => "1", :b => "2" } )
     "/controller_spec/some_action?a=1&b=2".
       should route_to( @route )
   end
@@ -146,15 +146,9 @@ share_as :RouteToExampleGroupSpec do
   end
   
   it "recognizing routes with methods besides :get" do
-    should_receive(:assert_routing).with(hash_including(:method => :put), anything, anything, anything)
+    should_receive(:assert_routing).with(hash_including(:method => :put), anything, {}, anything)
     { :put => "/rspec_on_rails_specs/37" }.
       should route_to(:controller => "rspec_on_rails_specs", :action => "update", :id => "37")
-  end
-  
-  it "helps the user format the path properly" do
-    lambda {"a string instead of a Hash".
-      should route_to(:controller => "rspec_on_rails_specs", :action => "update", :id => "37") 
-    }.should raise_error( ArgumentError, /usage/ )
   end
   
   it "allows only one key/value in the path - :method => path" do
