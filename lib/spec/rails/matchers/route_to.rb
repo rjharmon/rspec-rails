@@ -64,6 +64,8 @@ module Spec
       end
 
       # :call-seq:
+      #   "path".should route_to(expected)  # assumes GET
+      #   { :get => "path" }.should route_to(expected)
       #   { :put => "path" }.should route_to(expected)
       #
       # Uses ActionController::Routing::Routes to verify that
@@ -123,6 +125,8 @@ module Spec
 
       end
       # :call-seq:
+      #   { "path" }.should_not be_routable # assumes GET
+      #   { :get => "path" }.should_not be_routable
       #   { :put => "path" }.should_not be_routable
       #
       # Uses ActionController::Routing::Routes to verify that
