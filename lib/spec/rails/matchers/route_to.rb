@@ -11,10 +11,10 @@ module Spec
             end
             method = path.keys.first
             path = path[method]
-            path, querystring = path.split('?')
           else
-            raise USAGE
+            method = :get
           end
+          path, querystring = path.split('?')
           return method, path, querystring
         end
       end
@@ -31,8 +31,7 @@ module Spec
             method, path, querystring = verify_path( path )
 
             params = querystring.blank? ? {} : @example.params_from_querystring(querystring)
-            @example.assert_generates( path, @route, {}, params)
-            @example.assert_recognizes(@route, { :method => method, :path => path }, params)
+            @example.assert_routing({ :method => method, :path => path }, @route, {}, params)
             true
           rescue ActionController::RoutingError, ::Test::Unit::AssertionFailedError, ActionController::MethodNotAllowed => e
             raise e.class, "#{e}\nIf you're expecting this failure, we suggest { :#{method} => \"#{path}\" }.should_not be_routable"
@@ -42,7 +41,7 @@ module Spec
         end
 
         def does_not_match(path)
-          raise ArgumentError, "Don't test a negative route like this.  "
+          raise ArgumentError, "Don't test a negative route like this."
         end
       
         def failure_message_for_should
@@ -65,6 +64,8 @@ module Spec
       end
 
       # :call-seq:
+      #   "path".should route_to(expected)  # assumes GET
+      #   { :get => "path" }.should route_to(expected)
       #   { :put => "path" }.should route_to(expected)
       #
       # Uses ActionController::Routing::Routes to verify that
@@ -124,6 +125,8 @@ module Spec
 
       end
       # :call-seq:
+      #   { "path" }.should_not be_routable # assumes GET
+      #   { :get => "path" }.should_not be_routable
       #   { :put => "path" }.should_not be_routable
       #
       # Uses ActionController::Routing::Routes to verify that
