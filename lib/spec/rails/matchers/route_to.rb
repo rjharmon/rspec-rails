@@ -17,6 +17,7 @@ module Spec
       end
 
       class RouteTo #:nodoc:
+        require 'spec/rails/example/routing_helpers.rb'
         include ::Spec::Rails::Example::RoutingHelpers::ParamsFromQueryString
 
         def initialize(expected, example)
